@@ -229,7 +229,7 @@
 </div>
 
 <script>
-  const crushNameInput = document.getElementById('crushName');
+ const crushNameInput = document.getElementById('crushName');
   const photoInput = document.getElementById('photoInput');
   const fileWrapper = document.getElementById('fileWrapper');
   const previewImage = document.getElementById('previewImage');
@@ -280,9 +280,10 @@
     // Encode the data into URL parameters
     const encodedData = btoa(encodeURIComponent(JSON.stringify(valentineData)));
     
-    // Generate the URL (using current page as base, with a different page parameter)
+    // FIXED: Better URL generation that works locally and online
     const currentUrl = window.location.href.split('?')[0];
-    const valentineUrl = currentUrl.replace('valentine-generator.html', 'valentine-page.html') + '?data=' + encodedData;
+    const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
+    const valentineUrl = baseUrl + 'valentine-page.html?data=' + encodedData;
     
     // Show result
     generatedLink.value = valentineUrl;
@@ -295,12 +296,19 @@
   // Copy link
   copyBtn.addEventListener('click', () => {
     generatedLink.select();
-    document.execCommand('copy');
-    
-    successMsg.classList.add('show');
-    setTimeout(() => {
-      successMsg.classList.remove('show');
-    }, 3000);
+    navigator.clipboard.writeText(generatedLink.value).then(() => {
+      successMsg.classList.add('show');
+      setTimeout(() => {
+        successMsg.classList.remove('show');
+      }, 3000);
+    }).catch(() => {
+      // Fallback for older browsers
+      document.execCommand('copy');
+      successMsg.classList.add('show');
+      setTimeout(() => {
+        successMsg.classList.remove('show');
+      }, 3000);
+    });
   });
 </script>
 
