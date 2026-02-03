@@ -240,23 +240,28 @@
 </div>
 
 <script>
-  // Get data from URL
+  // Get ID from URL
   const urlParams = new URLSearchParams(window.location.search);
-  const encodedData = urlParams.get('data');
+  const valentineId = urlParams.get('id');
   
-  if (encodedData) {
+  if (valentineId) {
     try {
-      const decodedData = JSON.parse(decodeURIComponent(atob(encodedData)));
+      // Get data from localStorage
+      const storedData = localStorage.getItem(valentineId);
       
-      // Set the name
-      if (decodedData.name) {
-        document.getElementById('nameDisplay').textContent = decodedData.name;
-      }
-      
-      // Set the image
-      if (decodedData.image) {
-        const imageBox = document.getElementById('imageBox');
-        imageBox.innerHTML = `<img src="${decodedData.image}" alt="Our photo">`;
+      if (storedData) {
+        const decodedData = JSON.parse(storedData);
+        
+        // Set the name
+        if (decodedData.name) {
+          document.getElementById('nameDisplay').textContent = decodedData.name;
+        }
+        
+        // Set the image
+        if (decodedData.image) {
+          const imageBox = document.getElementById('imageBox');
+          imageBox.innerHTML = `<img src="${decodedData.image}" alt="Our photo">`;
+        }
       }
     } catch (e) {
       console.error('Error loading data:', e);
