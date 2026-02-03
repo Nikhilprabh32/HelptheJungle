@@ -229,7 +229,7 @@
 </div>
 
 <script>
- const crushNameInput = document.getElementById('crushName');
+  const crushNameInput = document.getElementById('crushName');
   const photoInput = document.getElementById('photoInput');
   const fileWrapper = document.getElementById('fileWrapper');
   const previewImage = document.getElementById('previewImage');
@@ -271,19 +271,21 @@
       return;
     }
 
-    // Create the data object
+    // Create a unique ID for this valentine
+    const valentineId = 'valentine_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+
+    // Store the data in localStorage with the unique ID
     const valentineData = {
       name: name,
       image: uploadedImageData || null
     };
-
-    // Encode the data into URL parameters
-    const encodedData = btoa(encodeURIComponent(JSON.stringify(valentineData)));
     
-    // FIXED: Better URL generation that works locally and online
+    localStorage.setItem(valentineId, JSON.stringify(valentineData));
+
+    // Generate the URL with just the ID
     const currentUrl = window.location.href.split('?')[0];
     const baseUrl = currentUrl.substring(0, currentUrl.lastIndexOf('/') + 1);
-    const valentineUrl = baseUrl + 'valentine-page.html?data=' + encodedData;
+    const valentineUrl = baseUrl + 'valentine-page.html?id=' + valentineId;
     
     // Show result
     generatedLink.value = valentineUrl;
@@ -302,7 +304,6 @@
         successMsg.classList.remove('show');
       }, 3000);
     }).catch(() => {
-      // Fallback for older browsers
       document.execCommand('copy');
       successMsg.classList.add('show');
       setTimeout(() => {
